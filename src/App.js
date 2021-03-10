@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState,useEffect } from 'react';
 import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
 import Header from './components/Header';
 import Content1 from './components/Content1';
@@ -10,9 +10,59 @@ import ContentDetails from './components/ContentDetails';
 import Main from './components/Main';
 import './App.css';
 import {Grid} from '@material-ui/core';
+import axios from 'axios';
+import { Category, CategorySharp } from '@material-ui/icons';
+
+
 
 
 function App() {
+
+//+++++++ Let´s Fetch ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+const[muggelrecipe,setMuggelRecipe] = useState([])
+
+useEffect(()=>{
+  axios.get('http://localhost:3040/api/muggel')
+  .then(res=>{
+    console.log(res)
+    setMuggelRecipe(res)
+  })
+  .catch(err=>{
+    console.log(err)
+  })
+},[])
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+const[hufflepuff,setHufflepuff]=useState();
+const[gryffindor,setGryffindor]=useState();
+const[ravenclaw,setRavenclaw]=useState();
+const[slytherin,setSlytherin]=useState();
+
+const categorys = ['hufflepuff','gryffindor','ravenclaw','slytherin'];
+
+useEffect(()=>{
+  getCategory();
+},[]);
+
+const getCategory =()=>{
+  categorys.map( category =>{
+    axios.get(`http://localhost:3040/api/muggel/category/${category}`)
+    .then(data=>{
+      if(category === 'hufflepuff') setHufflepuff(data)
+      if(category === 'gryffindor') setGryffindor(data)
+      if(category === 'ravenclaw') setRavenclaw(data)
+      if(category === 'slytherin') setSlytherin(data)
+    
+    })
+    .catch(err=>{
+    console.log(err)
+    })
+
+  },[])
+}
+
+
+
 
   return (
 
